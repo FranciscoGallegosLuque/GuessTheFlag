@@ -125,7 +125,9 @@ struct ContentView: View{
     @State private var gameEnded: Bool = false
     
     @State private var animationAmount = 0.0
+    @State private var fadingAmount = 1.0
     @State private var flagSelected: Int = 0
+    
     
     var body: some View {
         ZStack {
@@ -155,12 +157,16 @@ struct ContentView: View{
                             flagTapped(number)
                             withAnimation {
                                 animationAmount += 360
-                            } 
+                                fadingAmount = 0.25
+                            }
                         
                         } label: {
                             FlagImage(country: countries[number])
                                 .rotation3DEffect(.degrees(flagSelected == number ? animationAmount : 0.0), axis: (x: 0, y: 1, z: 0))
+                                
                         }
+                        .opacity(flagSelected == number ? 1.0 : fadingAmount)
+                        .scaledToFit()
                     }
                 }
                 
@@ -201,9 +207,11 @@ struct ContentView: View{
         
         flagSelected = number
         showingScore = true
+        
     }
     
     func askQuestion() {
+        fadingAmount = 1.0
         questionsAsked += 1
         if questionsAsked > 7 { gameEnded.toggle() }
         else {
@@ -218,6 +226,7 @@ struct ContentView: View{
         questionsAsked = 0
         userScore = 0
         gameEnded.toggle()
+        
     }
 }
 
